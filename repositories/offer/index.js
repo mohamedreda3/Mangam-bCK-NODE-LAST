@@ -845,13 +845,13 @@ module.exports = class {
     const offers = await doQuery("SELECT * FROM offers WHERE id = ?", [
       data?.offer_id,
     ]);
-    
+
     if (!offers || !offers?.length) {
       return { status: 0, message: "Offer Not Found" };
     }
-    
+
     const notifyDate = offers[0]?.will_av_after;
-    
+
     await doQuery(
       "INSERT INTO notifyOffer (userId, offerId, notifyDate, text) VALUES (?, ?, ?, ?)",
       [
@@ -863,13 +863,12 @@ module.exports = class {
           "  is Available Go To Explore This Offer..!",
       ]
     );
-    
+
     const scheduledDate = new Date(notifyDate);
     const cronSchedulePattern = `${scheduledDate.getMinutes()} ${scheduledDate.getHours()} ${scheduledDate.getDate()} ${
       scheduledDate.getMonth() + 1
     } *`;
-    
-  
+
     // Schedule the job to run only once on the specified date and time.
     cron.schedule(
       cronSchedulePattern,
@@ -894,8 +893,7 @@ module.exports = class {
         timezone: "UTC", // Set the timezone (adjust as needed)
       }
     );
-    
+
     return { status: 1, message: "We Will Notify You, Thanks!" };
   }
-  
 };
